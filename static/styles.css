@@ -1,0 +1,143 @@
+/* Full-page layout, spacious navbar, and wide responsive table */
+
+:root {
+    --brand-1: #4e73df;
+    --brand-2: #224abe;
+    --muted: #6c757d;
+    --bg: #f4f6f9;
+}
+
+html, body {
+    height: 100%;
+}
+body {
+    margin: 0;
+    background: var(--bg);
+    font-family: Inter, 'Segoe UI', Roboto, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.navbar {
+    background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
+    padding: 12px 20px;
+    box-shadow: 0 6px 18px rgba(34, 74, 190, 0.08);
+}
+.navbar .navbar-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+.navbar .navbar-nav {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+.navbar .nav-link {
+    color: rgba(226,230,234,0.95) !important;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background 150ms ease, color 150ms ease, transform 120ms ease;
+}
+.navbar .nav-link:hover {
+    background: rgba(255,255,255,0.12);
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+.container-fluid {
+    max-width: 1200px;
+    margin: 28px auto;
+    padding: 0 20px;
+}
+
+.page-title {
+    text-align: left;
+    color: var(--brand-1);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(23, 43, 77, 0.04);
+    background: #fff;
+    margin-bottom: 22px;
+}
+.card-body {
+    padding: 20px;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 700px;
+}
+table.table thead th {
+    background: linear-gradient(90deg, rgba(78,115,223,0.95), rgba(34,74,190,0.95));
+    color: #fff;
+    font-weight: 700;
+    padding: 14px 16px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+table.table tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f3f7;
+}
+table.table tbody tr:hover {
+    background: #f8fafc;
+}
+table.table .text-end {
+    text-align: right;
+}
+
+/* Forms */
+.form-label {
+    font-weight: 700;
+    color: #2e3a59;
+}
+input.form-control, select.form-control {
+    border-radius: 8px;
+    border: 1px solid #e6e9f2;
+    padding: 10px 12px;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
+    border: none;
+    box-shadow: 0 6px 18px rgba(34, 74, 190, 0.08);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+.btn-primary:hover {
+    transform: translateY(-1px);
+}
+
+.footer {
+    margin-top: 36px;
+    padding: 18px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar .navbar-brand { font-size: 1.05rem; }
+    .navbar .navbar-nav { gap: 12px; }
+    table.table { min-width: 600px; }
+}
