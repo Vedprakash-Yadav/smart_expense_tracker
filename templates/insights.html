@@ -1,13 +1,53 @@
-{% extends 'base.html' %}
-{% block content %}
-<h2 class="page-title">Insights</h2>
-<div class="card">
-    <div class="card-body">
-        <ul class="list-group list-group-flush">
-            {% for tip in insights %}
-            <li class="list-group-item">{{ tip }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Expense Insights</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h2>Daily Expenses (Line Chart)</h2>
+  <canvas id="dailyChart"></canvas>
+
+  <h2>Monthly Expenses (Bar Chart)</h2>
+  <canvas id="monthlyChart"></canvas>
+
+  <script>
+    // Data from Flask
+    const dailyLabels = {{ daily_labels | safe }};
+    const dailyValues = {{ daily_values | safe }};
+    const monthlyLabels = {{ monthly_labels | safe }};
+    const monthlyValues = {{ monthly_values | safe }};
+
+    // --- Daily Line Chart ---
+    new Chart(document.getElementById('dailyChart'), {
+      type: 'line',
+      data: {
+        labels: dailyLabels,
+        datasets: [{
+          label: 'Daily Expenses',
+          data: dailyValues,
+          borderColor: 'blue',
+          backgroundColor: 'lightblue',
+          tension: 0.3,
+          fill: true
+        }]
+      }
+    });
+
+    // --- Monthly Bar Chart ---
+    new Chart(document.getElementById('monthlyChart'), {
+      type: 'bar',
+      data: {
+        labels: monthlyLabels,
+        datasets: [{
+          label: 'Monthly Expenses',
+          data: monthlyValues,
+          backgroundColor: 'orange'
+        }]
+      }
+    });
+  </script>
+</body>
+</html>
+

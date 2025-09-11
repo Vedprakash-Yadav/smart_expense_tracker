@@ -1,16 +1,16 @@
-# kept for backward-compat; current app uses internal generate_insights()
-def get_insights(expenses):
-    if not expenses:
-        return ['No expenses yet to analyze.']
-    totals = {}
-    total = 0
-    for e in expenses:
-        totals.setdefault(e.category, 0)
-        totals[e.category] += float(e.amount)
-        total += float(e.amount)
-    top = max(totals.items(), key=lambda x: x[1])
-    percent = (top[1]/total)*100 if total else 0
-    tips = [f'You spent most on {top[0]} ({percent:.1f}% of total).']
-    if percent > 40:
-        tips.append(f'Consider reducing {top[0]} expenses.')
-    return tips
+from flask_sqlalchemy import SQLAlchemy
+from datetime import date
+
+db = SQLAlchemy()
+
+class Expense(db.Model):
+    __tablename__ = "expenses"
+
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(50), nullable=False)  # expense category
+    amount = db.Column(db.Float, nullable=False)  # expense amount
+    description = db.Column(db.String(200), nullable=True)  # optional description
+    date = db.Column(db.Date, nullable=False, default=date.today)  # stores as DATE type
+
+    def __repr__(self):
+        return f"<Expense {self.id} - {self.amount} on {self.date}>"
