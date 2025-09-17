@@ -2,7 +2,7 @@
 {% block main_class %}container-fluid my-3{% endblock %}
 {% block content %}
 
-<h2 class="page-title">📊 Your Financial Insights</h2>
+<h2 class="page-title">📈 Your Financial Insights</h2>
 
 <!-- Metrics Cards Row -->
 <div class="row g-3 mb-4">
@@ -117,7 +117,7 @@
     <li>You have spent <strong>{{ percent_used }}%</strong> of your budget in {{ days_passed }} days.</li>
     <li>Your projected spending is <strong>₹{{ projected }}</strong>, which is
       {% if projected > budget %}
-        <span class="text-danger">over budget by ₹{{ projected - budget }}</span>.
+        <span class="text-danger">over budget by ₹{{ "%.2f" % (projected - budget) }}</span>.
       {% else %}
         <span class="text-success">within budget, leaving ₹{{ budget - projected }} surplus 🎉</span>.
       {% endif %}

@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from model import db, Expense, Budget
 from datetime import datetime, date , timedelta
 import os
-import json
 import calendar
 from collections import defaultdict
 
