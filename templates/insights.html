@@ -1,53 +1,220 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Expense Insights</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-  <h2>Daily Expenses (Line Chart)</h2>
-  <canvas id="dailyChart"></canvas>
+{% extends 'base.html' %}
+{% block content %}
 
-  <h2>Monthly Expenses (Bar Chart)</h2>
-  <canvas id="monthlyChart"></canvas>
+<h2 class="page-title">📊 Your Financial Insights</h2>
 
-  <script>
-    // Data from Flask
-    const dailyLabels = {{ daily_labels | safe }};
-    const dailyValues = {{ daily_values | safe }};
-    const monthlyLabels = {{ monthly_labels | safe }};
-    const monthlyValues = {{ monthly_values | safe }};
+<!-- Metrics Cards Row -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="card text-bg-primary text-center">
+      <div class="card-body">
+        <h6>Budget</h6>
+        <h4>₹{{ budget }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-bg-danger text-center">
+      <div class="card-body">
+        <h6>Spent</h6>
+        <h4>₹{{ total_spent }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-bg-success text-center">
+      <div class="card-body">
+        <h6>Remaining</h6>
+        <h4>₹{{ remaining }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card text-bg-warning text-center">
+      <div class="card-body">
+        <h6>Projected</h6>
+        <h4>₹{{ projected }}</h4>
+      </div>
+    </div>
+  </div>
+</div>
 
-    // --- Daily Line Chart ---
-    new Chart(document.getElementById('dailyChart'), {
-      type: 'line',
-      data: {
+<!-- Budget Progress Bar -->
+<div class="card mb-4">
+  <div class="card-body">
+    <h6>Budget Usage</h6>
+    <div class="progress">
+      <div class="progress-bar 
+           {% if percent_used > 80 %}bg-danger
+           {% elif percent_used > 50 %}bg-warning
+           {% else %}bg-success{% endif %}"
+           role="progressbar"
+           style="width: {{ percent_used }}%;">
+        {{ percent_used }}%
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Daily Spending Trend (Full Width) -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-center mb-3">Daily Spending Trend</h6>
+        <div class="daily-chart-container">
+          <canvas id="dailyChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Monthly Totals & Category Chart Side by Side -->
+<style>
+  .chart-container {
+  position: relative;
+  height: 350px;
+  width: 100%;
+  display: flex;
+  justify-content: center;  /* horizontal center */
+  align-items: center;      /* vertical center */} 
+
+  .daily-chart-container {
+  position: relative;
+  height: 250px;   /* reduce height (~30% of screen) */
+  width: 100%;}
+
+</style>
+<div class="row mb-4">
+  <div class="col-lg-6 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-center mb-3">Monthly Totals</h6>
+        <div class="chart-container">
+          <canvas id="monthlyChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="text-center mb-3">Category-wise Spending</h6>
+        <div class="chart-container">
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Insights Box -->
+<div class="alert alert-info mt-4">
+  <h5>💡 Insights</h5>
+  <ul>
+    <li>You have spent <strong>{{ percent_used }}%</strong> of your budget in {{ days_passed }} days.</li>
+    <li>Your projected spending is <strong>₹{{ projected }}</strong>, which is
+      {% if projected > budget %}
+        <span class="text-danger">over budget by ₹{{ projected - budget }}</span>.
+      {% else %}
+        <span class="text-success">within budget, leaving ₹{{ budget - projected }} surplus 🎉</span>.
+      {% endif %}
+    </li>
+    <li>Your top spending category is <strong>{{ top_category }}</strong> (₹{{ top_category_amount }}).</li>
+    <li>Compared to the Indian average (₹{{ avg_indian }} per month), you are
+      {% if total_spent > avg_indian %}
+        spending <span class="text-danger">higher</span>.
+      {% else %}
+        spending <span class="text-success">lower</span>.
+      {% endif %}
+    </li>
+  </ul>
+</div>
+
+<!-- Chart.js Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const dailyLabels = {{ daily_labels | safe }};
+const dailyValues = {{ daily_values | safe }};
+const monthlyLabels = {{ monthly_labels | safe }};
+const monthlyValues = {{ monthly_values | safe }};
+const categoryLabels = {{ category_labels | safe }};
+const categoryValues = {{ category_values | safe }};
+
+// Daily Line Chart
+new Chart(document.getElementById('dailyChart'), {
+    type: 'line',
+    data: {
         labels: dailyLabels,
         datasets: [{
-          label: 'Daily Expenses',
-          data: dailyValues,
-          borderColor: 'blue',
-          backgroundColor: 'lightblue',
-          tension: 0.3,
-          fill: true
+            label: 'Daily Spending',
+            data: dailyValues,
+            borderColor: '#007bff',
+            tension: 0.3,
+            fill: false,
+            pointBackgroundColor: '#007bff',
+            pointRadius: 4
         }]
-      }
-    });
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } }
+    }
+});
 
-    // --- Monthly Bar Chart ---
-    new Chart(document.getElementById('monthlyChart'), {
-      type: 'bar',
-      data: {
+// Monthly Bar Chart
+new Chart(document.getElementById('monthlyChart'), {
+    type: 'bar',
+    data: {
         labels: monthlyLabels,
         datasets: [{
-          label: 'Monthly Expenses',
-          data: monthlyValues,
-          backgroundColor: 'orange'
+            label: 'Monthly Total',
+            data: monthlyValues,
+            backgroundColor: '#28a745'
         }]
-      }
-    });
-  </script>
-</body>
-</html>
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+    }
+});
 
+// Category Pie Chart
+new Chart(document.getElementById('categoryChart'), {
+    type: 'doughnut',
+    data: {
+        labels: categoryLabels,
+        datasets: [{
+            data: categoryValues,
+            backgroundColor: [
+              '#e41a1c', // red
+              '#377eb8', // blue
+              '#4daf4a', // green
+              '#984ea3', // purple
+              '#ff7f00', // orange
+              '#ffff33', // yellow
+              '#a65628', // brown
+              '#f781bf', // pink
+              '#999999', // gray
+              '#66c2a5', // teal
+              '#fc8d62'  // coral 
+            ]
+
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+</script>
+
+{% endblock %}

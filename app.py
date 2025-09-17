@@ -3,6 +3,7 @@ from model import db, Expense
 from datetime import datetime, date
 import os
 import json
+import calendar
 from collections import defaultdict
 
 app = Flask(__name__)
@@ -18,10 +19,27 @@ with app.app_context():
 
 @app.route('/')
 def index():
-    expenses = Expense.query.order_by(Expense.date.desc()).all()
+    filter_option = request.args.get("filter", "all")  # default = all
+    
+    if filter_option == "month":
+        today = date.today()
+        first_day = date(today.year, today.month, 1)
+        last_day = date(today.year, today.month, calendar.monthrange(today.year, today.month)[1])
+        
+        expenses = Expense.query.filter(
+            Expense.date >= first_day,
+            Expense.date <= last_day
+        ).order_by(Expense.date.desc()).all()
+    else:
+        expenses = Expense.query.order_by(Expense.date.desc()).all()
+    
     total = sum(e.amount for e in expenses)
-    return render_template('home.html', expenses=expenses, total=total)
-
+    return render_template(
+        'home.html',
+        expenses=expenses,
+        total=total,
+        filter_option=filter_option
+    )
 @app.route('/add', methods=['GET','POST'])
 def add_expense():
     if request.method == 'POST':
@@ -73,38 +91,112 @@ def set_budget():
         return render_template('budget.html', budget=budget, remaining=remaining)
     return render_template('budget.html', budget=budget, remaining=remaining)
 
-
 @app.route('/insights')
 def insights():
+    # ✅ Fetch all expenses
     expenses = Expense.query.all()
 
-    # --- Daily expenses (for line chart) ---
-    daily_data = defaultdict(float)
-    for exp in expenses:
-        date_str = exp.date.strftime("%Y-%m-%d")  # assuming exp.date is a datetime
-        daily_data[date_str] += exp.amount
+    # ✅ Budget (you can fetch from DB if user sets it dynamically)
+    budget = 20000  
 
-    # Sort by date
-    daily_labels = sorted(daily_data.keys())
-    daily_values = [daily_data[d] for d in daily_labels]
+    # ✅ Totals
+    total_spent = sum(e.amount for e in expenses)
+    remaining = budget - total_spent if budget else 0
 
-    # --- Monthly expenses (for bar chart) ---
-    monthly_data = defaultdict(float)
-    for exp in expenses:
-        month_str = exp.date.strftime("%Y-%m")  # e.g. "2025-09"
-        monthly_data[month_str] += exp.amount
+    # ✅ Days passed in current month
+    today = date.today()
+    first_day = today.replace(day=1)
+    days_passed = (today - first_day).days + 1
+    days_in_month = 30  # or use calendar.monthrange(today.year, today.month)[1]
 
-    # Sort by month
-    monthly_labels = sorted(monthly_data.keys())
-    monthly_values = [monthly_data[m] for m in monthly_labels]
+    # ✅ Projected spending (simple extrapolation)
+    projected = round((total_spent / days_passed) * days_in_month, 2) if days_passed else 0
+
+    # ✅ % used
+    percent_used = round((total_spent / budget) * 100, 1) if budget else 0
+
+    # ✅ Daily trend
+    daily_summary = defaultdict(float)
+    for e in expenses:
+        d = e.date.strftime("%Y-%m-%d") if isinstance(e.date, (datetime, date)) else str(e.date)
+        daily_summary[d] += e.amount
+    daily_labels = list(daily_summary.keys())
+    daily_values = list(daily_summary.values())
+
+    # ✅ Monthly trend
+    monthly_summary = defaultdict(float)
+    for e in expenses:
+        m = e.date.strftime("%b") if isinstance(e.date, (datetime, date)) else str(e.date)
+        monthly_summary[m] += e.amount
+    monthly_labels = list(monthly_summary.keys())
+    monthly_values = list(monthly_summary.values())
+
+    # ✅ Category-wise
+    category_summary = defaultdict(float)
+    for e in expenses:
+        category_summary[e.category] += e.amount
+    category_labels = list(category_summary.keys())
+    category_values = list(category_summary.values())
+
+    # ✅ Top category
+    if category_summary:
+        top_category = max(category_summary, key=category_summary.get)
+        top_category_amount = category_summary[top_category]
+    else:
+        top_category, top_category_amount = "N/A", 0
+
+    # ✅ Indian average spending (mock, you can load from CSV later)
+    avg_indian = 15000 
 
     return render_template(
         'insights.html',
-        daily_labels=json.dumps(daily_labels),
-        daily_values=json.dumps(daily_values),
-        monthly_labels=json.dumps(monthly_labels),
-        monthly_values=json.dumps(monthly_values)
+        budget=budget,
+        total_spent=total_spent,
+        remaining=remaining,
+        projected=projected,
+        percent_used=percent_used,
+        days_passed=days_passed,
+        daily_labels=daily_labels,
+        daily_values=daily_values,
+        monthly_labels=monthly_labels,
+        monthly_values=monthly_values,
+        category_labels=category_labels,
+        category_values=category_values,
+        top_category=top_category,
+        top_category_amount=top_category_amount,
+        avg_indian=avg_indian
     )
+# @app.route('/insights')
+# def insights():
+#     expenses = Expense.query.all()
+
+#     # --- Daily expenses (for line chart) ---
+#     daily_data = defaultdict(float)
+#     for exp in expenses:
+#         date_str = exp.date.strftime("%Y-%m-%d")  # assuming exp.date is a datetime
+#         daily_data[date_str] += exp.amount
+
+#     # Sort by date
+#     daily_labels = sorted(daily_data.keys())
+#     daily_values = [daily_data[d] for d in daily_labels]
+
+#     # --- Monthly expenses (for bar chart) ---
+#     monthly_data = defaultdict(float)
+#     for exp in expenses:
+#         month_str = exp.date.strftime("%Y-%m")  # e.g. "2025-09"
+#         monthly_data[month_str] += exp.amount
+
+#     # Sort by month
+#     monthly_labels = sorted(monthly_data.keys())
+#     monthly_values = [monthly_data[m] for m in monthly_labels]
+
+#     return render_template(
+#         'insights.html',
+#         daily_labels=json.dumps(daily_labels),
+#         daily_values=json.dumps(daily_values),
+#         monthly_labels=json.dumps(monthly_labels),
+#         monthly_values=json.dumps(monthly_values)
+#     )
 
 
 if __name__ == '__main__':

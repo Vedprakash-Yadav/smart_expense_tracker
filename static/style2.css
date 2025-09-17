@@ -1,0 +1,90 @@
+/* ============================
+    Insights Page Styling
+============================= */
+
+/* Page title */
+.page-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #343a40;
+    text-align: center;
+}
+
+/* Metrics cards */
+.card.text-bg-primary, 
+.card.text-bg-danger, 
+.card.text-bg-success, 
+.card.text-bg-warning {
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card.text-bg-primary:hover,
+.card.text-bg-danger:hover,
+.card.text-bg-success:hover,
+.card.text-bg-warning:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+/* Progress bar */
+.progress {
+    height: 25px;
+    border-radius: 15px;
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    font-weight: 500;
+    font-size: 0.9rem;
+    line-height: 25px;
+}
+
+/* Charts cards */
+.card canvas {
+    width: 100% !important;
+    height: 300px !important;
+}
+
+/* Insights alert box */
+.alert-info {
+    background: linear-gradient(135deg, #cfe2ff, #e0f7fa);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 20px;
+    font-size: 1rem;
+}
+
+/* Lists inside alert */
+.alert-info ul {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.alert-info li {
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    .card-body h6 {
+        font-size: 0.9rem;
+    }
+
+    .page-title {
+        font-size: 1.6rem;
+    }
+
+    .alert-info {
+        font-size: 0.9rem;
+    }
+}
+
+/* Hover effect for charts card */
+.card:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
