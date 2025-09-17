@@ -14,3 +14,18 @@ class Expense(db.Model):
 
     def __repr__(self):
         return f"<Expense {self.id} - {self.amount} on {self.date}>"
+
+class Budget(db.Model):
+    __tablename__ = "budgets"
+
+    id = db.Column(db.Integer, primary_key=True)
+    year = db.Column(db.Integer, nullable=False)
+    month = db.Column(db.Integer, nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+
+    __table_args__ = (
+        db.UniqueConstraint('year', 'month', name='unique_month_budget'),
+    )
+
+    def __repr__(self):
+        return f"<Budget {self.month}-{self.year}: {self.amount}>"
