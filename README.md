@@ -24,17 +24,24 @@ It helps you manage daily expenses, set monthly budgets, and gain insights with 
 
 👉 Add your images here after uploading to GitHub (e.g., `![Home Page](images/home.png)`)
 
+- **Signup Page**  
+  ![Signup Page](images/signup.png)  
+
 - **Login Page**  
   ![Login Page](images/login.png)  
 
-- **Dashboard / Home**  
-  ![Home Page](images/home.png)  
+- **Home**  
+  ![Home Page](images/home.png)
+
+  - **Add Expense**  
+  ![Home Page](images/addExpense.png)  
 
 - **Set Budget**  
-  ![Budget Page](images/budget.png)  
+  ![Budget Page](images/setBudget.png)  
 
 - **Insights with Charts**  
-  ![Insights](images/insights.png)  
+  ![Insights](images/insights.png)
+  ![Insights](images/insights2.png)  
 
 ---
 
@@ -44,3 +51,44 @@ Clone the repository:
 ```bash
 git clone https://github.com/your-username/smart-expense-tracker.git
 cd smart-expense-tracker
+
+---
+
+## create virtual Environment and activate
+
+python3 -m venv venv
+source venv/bin/activate   # Mac/Linux
+venv\Scripts\activate      # Windows
+
+---
+
+## Install dependencies and Run 
+
+pip install -r requirements.txt
+python app.py
+
+---
+
+## 📦 Deployment
+
+gunicorn -w 4 -b 0.0.0.0:5000 app:app
+
+---
+
+## 🛠️ Tech Stack
+
+Backend: Flask (Python)
+Database: SQLite + SQLAlchemy ORM
+Frontend: Bootstrap 5 + Chart.js
+Auth: Flask-Login
+Deployment: Gunicorn
+
+---
+
+## 👨‍💻 Contributing
+
+Pull requests are welcome! If you’d like to add new features or fix bugs, please open an issue first to discuss.
+
+---
+
+⭐ If you like this project, don’t forget to star the repo!
