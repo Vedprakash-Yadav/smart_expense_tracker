@@ -11,11 +11,11 @@
             </div>
             <div>
                 <a class="btn btn-sm {% if filter_option=='all' %}btn-soft-green{% else %}btn-outline-soft-green{% endif %}" 
-                   href="{{ url_for('index', filter='all') }}">
+                   href="{{ url_for('home', filter='all') }}">
                    All Expenses
                 </a>
                 <a class="btn btn-sm {% if filter_option=='month' %}btn-soft-green{% else %}btn-outline-soft-green{% endif %}" 
-                   href="{{ url_for('index', filter='month') }}">
+                   href="{{ url_for('home', filter='month') }}">
                    This Month
                 </a>
             </div>

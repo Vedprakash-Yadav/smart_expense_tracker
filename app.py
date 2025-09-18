@@ -13,7 +13,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expenses.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
-# Create tables at startup (Flask 3.x compatible)
 with app.app_context():
     db.create_all()
 
@@ -30,7 +29,7 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    return render_template("index.html")  # index.html will have signup/login links
+    return render_template("index.html")  
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
