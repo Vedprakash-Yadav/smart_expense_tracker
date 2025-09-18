@@ -1,4 +1,4 @@
-# 💰 Smart Expense Tracker  
+# 💰 FinSight  
 
 A simple, smart, and lightweight expense tracker built with **Flask**, **SQLite**, and **Bootstrap**.  
 It helps you manage daily expenses, set monthly budgets, and gain insights with charts & analytics.  
@@ -22,7 +22,6 @@ It helps you manage daily expenses, set monthly budgets, and gain insights with 
 
 ## 📸 Screenshots  
 
-👉 Add your images here after uploading to GitHub (e.g., `![Home Page](images/home.png)`)
 
 - **Signup Page**  
   ![Signup Page](images/signup.png)  
