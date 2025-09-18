@@ -5,7 +5,6 @@ from datetime import datetime, date, timedelta
 import os
 import calendar
 from collections import defaultdict
-# from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change')
