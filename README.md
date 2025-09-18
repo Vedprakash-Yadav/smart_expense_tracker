@@ -22,6 +22,8 @@ It helps you manage daily expenses, set monthly budgets, and gain insights with 
 
 ## 📸 Screenshots  
 
+- **Welcome Page**  
+  ![Welcome Page](images/welcome.png)
 
 - **Signup Page**  
   ![Signup Page](images/signup.png)  
@@ -48,8 +50,8 @@ It helps you manage daily expenses, set monthly budgets, and gain insights with 
 
 Clone the repository:  
 ```bash
-git clone https://github.com/your-username/smart-expense-tracker.git
-cd smart-expense-tracker
+git clone https://github.com/Vedprakash-Yadav/FinSight.git
+cd FinSight
 
 ---
 
